@@ -33,9 +33,10 @@ Movebank Data Repository, item `f30fb6d4-803f-4b45-8313-716c3b21e087`.
 
 ## What this dataset does not support
 
-- Pooling the 15 animals as one population of instruments: two production
-  batches of the same collar model differ by a factor above a thousand in
-  gross-error rate. See `README.md`.
+- Pooling the 15 animals as one population of instruments: the collars
+  delivered in 2008 and in 2009 differ by a factor of about 1,700 in
+  gross-error rate. The cause is an acquisition behaviour resolved in the
+  field in 2010, not a difference of hardware. See `README.md`.
 - Fix counts as a measure of effort without care: 2.17 % of rows repeat
   the previous position exactly.
 
@@ -46,8 +47,9 @@ positions A, B, C the excursion is `(AB + BC - AC) / 2`, compared to the
 95th percentile of that individual's own step. A fix is flagged past ten
 times its own yardstick.
 
-Applied unchanged to 388 public datasets, this detector recovers the
-documented precision gap between Argos and GPS on its own, p = 3.4e-07,
+Applied unchanged across the corpus, this detector recovers the documented
+precision gap between Argos and GPS on its own, over the 287 datasets labelled
+as one or the other, p = 3.4e-07,
 without being told anything about the positioning system.
 
 This bench judges neither the science nor the collection. It measures what
