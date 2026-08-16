@@ -1,42 +1,58 @@
-# Data from: Study "African elephants in Etosha National Park (data from Tsalyuk et al. 2018)"
+# Quality sheet: African elephants in Etosha National Park
 
-Fiche de qualite ICHNOS. Movebank Data Repository, item `f30fb6d4-803f-4b45-8313-716c3b21e087`.
+Movebank Data Repository, item `f30fb6d4-803f-4b45-8313-716c3b21e087`.
 
-## Ce que le jeu contient
+## What the dataset carries
 
 | | |
 |---|---|
-| Capteur dominant | gps |
-| Fixes | 2 930 268 |
-| Individus | 15 |
-| Duree couverte | 1978 jours |
-| Cadence mediane | 10 s |
-| Cadence dominante | 10 s |
-| Regularite | 52 % des intervalles au pas dominant |
-| 95e centile des trous | 20 min |
+| Dominant sensor | gps |
+| Fixes | 2,930,268 |
+| Individuals | 15 |
+| Span | 1978 days |
+| Median cadence | 10 s |
+| Dominant cadence | 10 s |
+| Regularity | 52 % of intervals at the dominant step |
+| 95th percentile of gaps | 20 min |
 
-## Trois mesures de qualite
+## Three quality measures
 
-| Mesure | Valeur | Lecture |
+| Measure | Value | Reading |
 |---|---|---|
-| Pics de position | 0.000 % | rien de notable |
-| Positions repetees | 2.17 % | repetitions frequentes |
-| Grain des coordonnees | 8 decimales | precision preservee |
+| Position spikes | 0.000 % | nothing notable |
+| Repeated positions | 2.17 % | frequent repeats |
+| Coordinate grain | 8 decimals | precision preserved |
 
-## Ce que ce jeu ne permet pas
+> **Why "position spikes 0.000 %" sits next to a 17 % figure in `README.md`.**
+> They are two different detectors. The out-and-back detector above catches an
+> isolated fix that forces the track to leave and come straight back, which is
+> the general, species-free case. The batch effect is not that shape: those
+> pairs imply an impossible speed without returning, so the corpus-wide
+> detector does not see them and a physiological ceiling does. Neither is
+> wrong; a single criterion would have missed one of the two.
 
-- Toute comparaison de distance entre individus sans re-echantillonnage : seuls **52 %** des intervalles sont au pas dominant.
+## What this dataset does not support
 
-## Methode
+- Pooling the 15 animals as one population of instruments: two production
+  batches of the same collar model differ by a factor above a thousand in
+  gross-error rate. See `README.md`.
+- Fix counts as a measure of effort without care: 2.17 % of rows repeat
+  the previous position exactly.
 
-Detecteur d'aller-retour, sans echelle ni espece : sur trois positions consecutives A, B, C, l'excursion vaut `(AB + BC - AC) / 2`. Elle est comparee au 95e centile du pas de **l'individu lui-meme**, ce qui evite tout seuil dependant de l'espece. Un fix est signale au-dela de dix fois cet etalon.
+## Method
 
-Validation : applique a 237 jeux publics, ce detecteur retrouve seul l'ecart de precision documente entre Argos et GPS (p = 3,4e-07), sans qu'aucune information sur le systeme de positionnement ne lui soit fournie.
+Out-and-back detector, no scale and no species: over three consecutive
+positions A, B, C the excursion is `(AB + BC - AC) / 2`, compared to the
+95th percentile of that individual's own step. A fix is flagged past ten
+times its own yardstick.
 
-Ce banc ne juge ni la science ni la collecte. Il mesure ce que le fichier publie porte, et ce qu'il ne porte pas.
+Applied unchanged to 388 public datasets, this detector recovers the
+documented precision gap between Argos and GPS on its own, p = 3.4e-07,
+without being told anything about the positioning system.
 
-Une mesure contestee est une mesure utile : si ce resultat vous parait faux, l'auteur veut le savoir.
+This bench judges neither the science nor the collection. It measures what
+the published file carries, and what it does not.
 
 ---
 
-*ICHNOS Field Clause, non-binding. This bench is free to use. If it was useful to you, and you work somewhere where things move, you are invited, and never required, to invite its author to come and see it.*
+*If this measurement is wrong, I would rather know.*
