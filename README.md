@@ -102,8 +102,35 @@ Locating a defect is what makes a proportionate remedy possible. Without
 knowing the anomalies sit on the first fix, the only safe options are to drop
 whole collars or to accept the contamination.
 
-The defect also stays invisible at the cadence these data are normally analysed
-at: any analysis subsampling to one fix per burst or coarser never sees it.
+## 6. Subsampling does not remove the defect. It selects it.
+
+The defect is invisible at the cadence these data are normally analysed at.
+Invisible is not harmless, and this is the part that matters if you hold data
+like these.
+
+**A resample to one sample per burst keeps the first fix** — that is what
+`.first()` returns — which is exactly the fix carrying the defect. Of the
+753,046 samples it yields, **29,441, or 3.91 %, are the contaminated fix**,
+with a median position error of 241 m and a 90th percentile of 722 m.
+
+**A speed or distance filter does not catch them.** At twenty-minute spacing,
+241 m implies 0.20 m/s and 722 m implies 0.60 m/s: walking pace for an
+elephant. A 2 m/s threshold removes **seven of the 29,441**. Subsampling
+dilutes the error below every plausible threshold while keeping the position
+error in full.
+
+**The burst says which fix is wrong.** Over the 28,922 four-fix bursts whose
+first pair is flagged, fix 1 sits a median of 242.7 m from the centroid of
+fixes 2-3-4, while fix 2 sits 2.2 m from the centroid of fixes 3-4. A factor of
+111, and fix 1 is the outlier in 100.0 % of them.
+
+So the remedy costs nothing:
+
+> **When subsampling a burst-sampled dataset, take the second fix of each
+> burst rather than the first.**
+
+One word in one line of code. No threshold, no species, no data discarded. What
+it needs is knowing the defect is there.
 
 ## Why the criterion can be trusted
 

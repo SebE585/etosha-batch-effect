@@ -210,6 +210,38 @@ def main() -> int:
     print("  the last pair of a burst, which this analysis does not explain.")
     print("  No collar needs excluding and no animal needs dropping.")
 
+    # ---------------------------------------------------------------- 6
+    rule("6. Subsampling does not remove it: it selects it")
+    idx_bad = first.index[first.bad]
+    jump = d[idx_bad]
+    print(f"  A resample to one sample per burst keeps the FIRST fix, which is")
+    print(f"  the one carrying the defect: {len(idx_bad):,} of {n_bursts:,} samples")
+    print(f"  ({100*len(idx_bad)/n_bursts:.2f} %), median position error "
+          f"{np.median(jump):.0f} m, p90 {np.quantile(jump, 0.9):.0f} m.\n")
+    print("  Would a speed filter catch them, at 20 min spacing?")
+    for thr in (1, 2, 4, 8):
+        caught = int((jump / WAKE_PERIOD_S > thr).sum())
+        print(f"    above {thr} m/s: {caught:,} of {len(idx_bad):,} "
+              f"({100*caught/len(idx_bad):.2f} %)")
+    print("  Subsampling dilutes the error below every plausible threshold while")
+    print("  keeping the position error in full.\n")
+
+    # Which fix of a flagged pair is the wrong one? The burst answers.
+    q = pd.DataFrame({"bid": bid, "rank": rank, "size": size,
+                      "lat": df["location-lat"].values, "lon": df["location-long"].values})
+    q = q[(q["size"] == 4) & q.bid.isin(set(bid[idx_bad]))]
+    piv = q.pivot(index="bid", columns="rank", values=["lat", "lon"]).dropna()
+    la, lo = piv["lat"], piv["lon"]
+    e1 = haversine_m(la[0], lo[0], la[[1, 2, 3]].mean(axis=1), lo[[1, 2, 3]].mean(axis=1))
+    e2 = haversine_m(la[1], lo[1], la[[2, 3]].mean(axis=1), lo[[2, 3]].mean(axis=1))
+    print(f"  Over {len(piv):,} four-fix bursts whose first pair is flagged:")
+    print(f"    fix 1 sits {np.median(e1):.1f} m from the centroid of fixes 2-3-4")
+    print(f"    fix 2 sits {np.median(e2):.1f} m from the centroid of fixes 3-4")
+    print(f"    fix 1 is the outlier in {100*(e1 > e2).mean():.1f} % of them")
+    print("\n  >>> When subsampling, take the SECOND fix of each burst, not the")
+    print("  >>> first. One word in one line. It removes the whole defect and")
+    print("  >>> discards nothing.")
+
     # The list, so anyone can apply or reject the remedy without rerunning this.
     idx = first.index[first.bad]
     out = pd.DataFrame({
